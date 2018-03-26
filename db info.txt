@@ -1,0 +1,53 @@
+Reports
+Primary key id
+UID (instance id) String
+plant_type String
+lat float
+long float
+date_time string
+image locations list of strings
+
+User
+UID String
+email String
+screen name StingUID
+
+set foreign_key_checks=0;
+create table Reports(
+UID varchar(40),
+UNIQUE(UID),
+plant_type varchar(2),
+latitude float,
+longitude float,
+img_location varchar(40),
+UNIQUE(img_location),
+FOREIGN KEY(img_location) REFERENCES Image_Locations(img_location)
+);
+
+create table Image_Locations(
+UID varchar(40),
+UNIQUE(UID),
+FOREIGN KEY(UID) REFERENCES Reports(UID),
+img_location varchar(40),
+UNIQUE(img_location)
+);
+
+create table Users 
+(
+UID varchar(40),
+UNIQUE(UID),
+FOREIGN KEY(UID) REFERENCES Reports(UID),
+email varchar(40)
+);
+
+
+From app
+User
+	UID
+	email
+	reports
+		report 1, 2, 3,....
+
+report
+	data
+	image1,image2,image3,...

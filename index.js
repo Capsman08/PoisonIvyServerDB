@@ -55,11 +55,37 @@ app.post('/reports', (req, res, next) => {
  //  	}		 
  //   	res.send('Added '+ newName +  '  in db')
 	// });
-	var text = '{"people" : [' + '{ "firstName" : "John:, "lastName" : "Arnesen" }]}'
-	var obj = JSON.parse(text)
-	console.log("Post Request \n" + JSON.stringify(req.body, null, '\t'))
-	res.send(obj)
+	console.log("Post Request \n" + JSON.stringify(req.body, null, '\t'));
 
+	var uid = req.body.uid;
+	var payloadType = req.body.payloadType;
+	var payload = req.body.payload;
+	var jsonResponseString = '{"status" : "UKNOWN"}';
+
+	if (payloadType === "SETTINGS") {
+		if (payload.hasOwnProperty("pref_screen_name")) {
+			var screenName = payload.pref_screen_name;
+			// TODO: update the screen name for the uid, null or empty should be treated the same
+			jsonResponseString = '{"status" : "COMPLETE"}'
+		}
+		else if (paylod.hasOwnProperty("pref_email")) {
+			var email = payload.pref_email;
+			// TODO: update the email for the uid, null or empty should be treated the same
+			jsonResponseString = '{"status" : "COMPLETE"}'
+		}
+	}
+	else if (payloadType === "REPORTS") {
+		var reportsList = payload;
+		// TODO: add the list of reports to the database
+		jsonResponseString = '{"status" : "COMPLETE"}'
+	}
+	else {
+		var errorMessage = "Unrecognized payloadType: " + payloadType + ". Ignoring this request.";
+		console.log(errorMessage);
+		jsonResponseString = '{"status" : "ERROR", "message" : "' + errorMessage + '" }'
+	}
+
+	res.send(JSON.parse(jsonResponseString));
 });
 
 

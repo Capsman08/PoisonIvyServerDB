@@ -39,6 +39,16 @@ app.get('/reports', (req, res, next) => {
 	});
 });
 
+app.get('/itchy/poisonivy', (req, res, next) => {
+
+	console.log("html request")
+	res.format({
+		html: () => {
+			res.render('index.html', {})
+		}
+	})
+});
+
 
 app.post('/reports', (req, res, next) => {
 	// TODO: get info from body/headers (probably body)

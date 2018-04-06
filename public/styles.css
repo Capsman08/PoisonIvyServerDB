@@ -1,0 +1,86 @@
+#ivy-body {
+	margin: 0px;
+	background-color: #39593a;
+}
+
+
+.ivy-banner-item {
+	color: white;
+	display: inline-block;
+	font-family: 'Lato', sans-serif;
+}
+
+.ivy-banner-option {
+	margin-left: 3em;
+	vertical-align: center;
+	position: absolute;
+	height: 47px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.ivy-banner-option:hover {
+	background-color: #1f4223;
+	cursor: pointer;
+}
+
+.ivy-banner-option-text {
+	text-align: center;
+	vertical-align: middle;
+	line-height: 47px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-top: 1px;
+
+}
+
+
+#ivy-banner {
+	background-color: black;
+	width: 100%;
+	margin: 0px;
+	max-height: 47px;
+}
+
+#ivy-banner-title {
+	margin-left: 1em;
+	font-family: 'Lato', sans-serif;
+	
+}
+
+#container {
+	text-align: center;
+	margin-left: 1em;
+	margin-right: 1em;
+
+}
+
+#project-title {
+	font-family: 'Lato', sans-serif;
+	color: white;
+	margin-top: 1em;
+	margin-bottom: 0em;
+}
+
+#data-type-title {
+	text-align: center;
+	color: white;
+	font-family: 'Lato', sans-serif;
+	margin-top:3em;
+	margin-bottom: 1em;
+
+}
+
+#data-page-selector {
+	text-align: center;
+	display: inline-block;
+}
+
+#download-csv-button {
+	text-align: right;
+	display: block;
+	position: absolute;
+	right: 1em;
+	margin-bottom: 4em;
+}
+

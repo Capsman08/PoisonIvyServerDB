@@ -16,6 +16,14 @@ connection.connect()
 
 //Set http connection
 //app.set('port',3000)
+
+//sets up path definitions for serving views
+//need to have ejs installed
+app.use(express.static(__dirname + '/public'));
+app.set('views', __dirname + '/public/views');
+app.engine('.html', require('ejs').__express);
+app.set('view engine', 'html');
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
@@ -39,12 +47,14 @@ app.get('/reports', (req, res, next) => {
 	});
 });
 
+
+
 app.get('/itchy/poisonivy', (req, res, next) => {
 
 	console.log("html request")
 	res.format({
 		html: () => {
-			res.render('index.html', {})
+			res.render('index.html')
 		}
 	})
 });

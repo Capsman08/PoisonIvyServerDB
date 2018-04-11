@@ -21,8 +21,8 @@ connection.connect()
 //need to have ejs installed
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/public/views');
-app.engine('.html', require('ejs').__express);
-app.set('view engine', 'html');
+app.engine('.html', require('ejs').__express); 
+app.set('view engine', 'ejs'); //setup to use ejs files instead of html
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
@@ -48,13 +48,12 @@ app.get('/reports', (req, res, next) => {
 });
 
 
-
+//Gets the html view to look at the data
 app.get('/itchy/poisonivy', (req, res, next) => {
 
-	console.log("html request")
 	res.format({
 		html: () => {
-			res.render('index.html')
+			res.render('index.ejs')
 		}
 	})
 });

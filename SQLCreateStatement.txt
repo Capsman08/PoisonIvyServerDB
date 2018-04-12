@@ -5,9 +5,6 @@ UNIQUE(UID),
 plant_type varchar(20),
 latitude float,
 longitude float,
-img_location varchar(80),
-UNIQUE(img_location),
-FOREIGN KEY(img_location) REFERENCES Image_Locations(img_location)
 );
 
 create table Image_Locations(

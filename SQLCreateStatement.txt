@@ -2,7 +2,7 @@ set foreign_key_checks=0;
 create table Reports(
 UID varchar(40),
 UNIQUE(UID),
-plant_type varchar(2),
+plant_type varchar(20),
 latitude float,
 longitude float,
 img_location varchar(80),

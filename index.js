@@ -27,7 +27,9 @@ IvyConnection.connect()
 
 
 //Set http connection
+
 app.set('port',3000)
+
 
 //sets up path definitions for serving views
 //need to have ejs installed
@@ -76,9 +78,21 @@ app.get('/itchy/poisonivy', (req, res, next) => {
 });
 
 
-app.post('/update', (req, res, next) => {
+app.post('/reports', (req, res, next) => {
+	// TODO: get info from body/headers (probably body)
+	// TODO: Parse information into correct types
 	// TODO: Save images on server and get the location
-	
+	// TODO: Create correct queries
+	// var newName = req.headers.name;
+	// var newReportNumber = req.headers.reportnumber;
+	// var query = 'INSERT INTO reports VALUES ("' + newName + '",' + newReportNumber + ')';
+	// connection.query(query, function (err, rows, fields) {
+ //  	if (err)
+ //  	{ 
+ //  		throw err
+ //  	}		 
+ //   	res.send('Added '+ newName +  '  in db')
+	// });
 	console.log("Post Request \n" + JSON.stringify(req.body, null, '\t'));
 
 	var uid = req.body.uid;
@@ -89,6 +103,7 @@ app.post('/update', (req, res, next) => {
 	if (payloadType === "SETTINGS") {
 		if (payload.hasOwnProperty("pref_screen_name")) {
 			var screenName = payload.pref_screen_name;
+
 			var UserQuery = 'Insert INTO Users (UID, screenname) VALUES (' +uid + ',' + ' "' + screenName + '") ON DUPLICATE KEY UPDATE screenname = "' + screenName + '";'
 
 			IvyConnection.query(UserQuery, function (err, rows, fields) {
@@ -96,6 +111,7 @@ app.post('/update', (req, res, next) => {
 					throw err;
 				}
 			});
+			// TODO: update the screen name for the uid, null or empty should be treated the same
 			jsonResponseString = '{"status" : "COMPLETE"}'
 		}
 		else if (paylod.hasOwnProperty("pref_email")) {
@@ -107,6 +123,8 @@ app.post('/update', (req, res, next) => {
 				}
 			});			jsonResponseString = '{"status" : "COMPLETE"}'
 
+			// TODO: update the email for the uid, null or empty should be treated the same
+			jsonResponseString = '{"status" : "COMPLETE"}'
 		}
 	}
 	else if (payloadType === "REPORTS") {
@@ -131,6 +149,7 @@ app.post('/update', (req, res, next) => {
 			});
 
 		}
+		// TODO: add the list of reports to the database
 		jsonResponseString = '{"status" : "COMPLETE"}'
 	}
 	else {

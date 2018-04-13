@@ -36,8 +36,8 @@ app.set('views', __dirname + '/public/views');
 app.engine('.html', require('ejs').__express); 
 app.set('view engine', 'ejs'); //setup to use ejs files instead of html
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb'}));
 
 app.get('/reports', (req, res, next) => {
 	//TODO: Get all the tables
@@ -79,8 +79,7 @@ app.get('/itchy/poisonivy', (req, res, next) => {
 app.post('/update', (req, res, next) => {
 	// TODO: Save images on server and get the location
 	
-	console.log("Post Request \n" + JSON.stringify(req.body, null, '\t'));
-
+	console.log("Post Request \n")// + JSON.stringify(req.body, null, '\t'));
 	var uid = req.body.uid;
 	var payloadType = req.body.payloadType;
 	var payload = req.body.payload;
@@ -105,7 +104,8 @@ app.post('/update', (req, res, next) => {
 				if (err) {
 					throw err;
 				}
-			});			jsonResponseString = '{"status" : "COMPLETE"}'
+			});			
+			jsonResponseString = '{"status" : "COMPLETE"}'
 
 		}
 	}
@@ -118,17 +118,24 @@ app.post('/update', (req, res, next) => {
 					throw err;
 				}
 			});
-		
+	
 
 		for( var i = 0; i < reportsList.length; i++)
 		{
 
-			var reportQuery = 'INSERT INTO Reports VALUES ("' + uid +'", "' + reportsList[i].plant_type + '" ,' + reportsList[i].longitude +','+ reportsList[i].latitude+',"' + reportsList[i].date +'");';
+			var reportQuery = 'INSERT INTO Reports VALUES ("' + uid +'", "' + reportsList[i].plant_type + '" ,' + reportsList[i].longitude +','+ reportsList[i].latitude+', "'+reportsList[i].date + '");';
 			IvyConnection.query(reportQuery, function (err, rows, fields) {
 				if (err) {
 					throw err;
 				}
 			});
+			var fs = require('fs');
+			fs.writeFile("test.txt", reportsList[i].images[0], function(err) {
+				if (err)
+					throw err; 
+
+			})
+			console.log("Length: " + reportsList[i].images[0].length + "\n");
 
 		}
 		jsonResponseString = '{"status" : "COMPLETE"}'

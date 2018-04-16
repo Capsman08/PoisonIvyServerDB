@@ -2,6 +2,7 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var shortid = require('shortid')
 var app = express();
+var sleep = require('sleep');
 
 //Open db Connection
 var mysql = require('mysql')
@@ -78,7 +79,7 @@ app.get('/itchy/poisonivy', (req, res, next) => {
 app.post('/update', (req, res, next) => {
 	// TODO: Save images on server and get the location
 	
-	console.log("Post Request \n")// + JSON.stringify(req.body, null, '\t'));
+	console.log("Post Request to /update \n")// + JSON.stringify(req.body, null, '\t'));
 	var uid = req.body.uid;
 	var payloadType = req.body.payloadType;
 	var payload = req.body.payload;
@@ -119,49 +120,58 @@ app.post('/update', (req, res, next) => {
 			});
 	
 
-		for( var i = 0; i < reportsList.length; i++)
+		for( var k = 0; k < reportsList.length; k++)
 		{
 
-			var reportQuery = 'INSERT INTO Reports VALUES (?, ?, ?, ?, ?);';
-			IvyConnection.query(reportQuery,[uid, reportsList[i].plant_type, reportsList[i].longitude,reportsList[i].latitude,reportsList[i].date ] ,function (err, rows, fields) {
+			var i = k; 
+			var reportQuery = 'INSERT INTO Reports VALUES (null, ?, ?, ?, ?, ?);';
+			IvyConnection.query(reportQuery,[uid, reportsList[i].plant_type, reportsList[i].longitude,reportsList[i].latitude,reportsList[i].date ] ,function (err, row, fields) {
 				if (err) {
 					throw err;
 				}
+				var repId = row.insertId;
+
+				// Loop through each image if there are images and give it a unique path to save
+				if(reportsList[i].images.length != 0 )
+				{
+					console.log("Inserting images")
+					for(var j = 0; j < reportsList[i].images.length;j++)
+					{
+						var imagePath = "../images/" + shortid.generate()+ ".png"
+						console.log(imagePath);
+						require("fs").writeFile(imagePath, reportsList[i].images[j], 'base64', function(err) 
+						{
+							if(err)
+							{
+  								console.log(err);
+  							}
+						});
+						console.log(repId)
+						//Insert image locations in database
+						var imageQuery = 'INSERT INTO Image_Locations VALUES(?,?)';
+
+						IvyConnection.query(imageQuery,[repId,imagePath], function (err, rows, fields)
+						{
+							if (err) 
+							{
+								throw err;
+							}
+						});
+					}
+				}
+				
 			});
 
-			//Testing code to write the base64 to file
-			var fs = require('fs');
-			fs.writeFile("test.txt", reportsList[i].images[0], function(err) {
-				if (err)
-					throw err; 
+		
 
-			})
-			// Loop through each image if there are images and give it a unique path to save
-			if(reportsList[i].images != undefined)
-			{
-				console.log("Inserting images")
-				for(var j = 0; j < reportsList[i].images.length;j++)
-				{
-					var imagePath = "../images/" + shortid.generate()+ ".png"
-					console.log(imagePath);
-					require("fs").writeFile(imagePath, reportsList[i].images[j], 'base64', function(err) 
-					{
-						if(err)
-						{
-  							console.log(err);
-  						}
-					});
-					//Insert image locations in database
-					var imageQuery = 'INSERT INTO Image_Locations VALUES(?,?)';
-					IvyConnection.query(imageQuery,[uid,imagePath], function (err, rows, fields)
-					{
-						if (err) 
-						{
-							throw err;
-						}
-					});
-				}
-			}
+			//Testing code to write the base64 to file
+			// var fs = require('fs');
+			// fs.writeFile("test.txt", reportsList[i].images[0], function(err) {
+			// 	if (err)
+			// 		throw err; 
+
+			// })
+						
 		}
 
 		jsonResponseString = '{"status" : "COMPLETE"}'

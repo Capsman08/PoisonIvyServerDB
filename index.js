@@ -41,9 +41,6 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb'}));
 
 app.get('/reports', (req, res, next) => {
-	//TODO: Get all the tables
-	//TODO: Relate images back to location
-	//TODO: Export as some file type probably csv + folder
 	console.log("Get Request")
 	connection.query('SELECT * from reports', function (err, rows, fields) {
   		if (err) 
@@ -80,6 +77,7 @@ app.post('/update', (req, res, next) => {
 	// TODO: Save images on server and get the location
 	
 	console.log("Post Request to /update \n")// + JSON.stringify(req.body, null, '\t'));
+
 	var uid = req.body.uid;
 	var payloadType = req.body.payloadType;
 	var payload = req.body.payload;
@@ -191,10 +189,6 @@ app.listen(app.get('port'), () => {
 	console.log('Listening on: ', app.get('port'))
 });
 
-// connection.query('SELECT * from reports', function (err, rows, fields) {
-//   if (err) throw err
 
-//   console.log('The solution is: ', rows)
-// })
 
 //connection.end()

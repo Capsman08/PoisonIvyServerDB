@@ -1,6 +1,6 @@
 var express = require('express')
 var bodyParser = require('body-parser')
-
+var shortid = require('shortid')
 var app = express();
 
 //Open db Connection
@@ -27,9 +27,7 @@ IvyConnection.connect()
 
 
 //Set http connection
-
 app.set('port',3000)
-
 
 //sets up path definitions for serving views
 //need to have ejs installed
@@ -38,8 +36,8 @@ app.set('views', __dirname + '/public/views');
 app.engine('.html', require('ejs').__express); 
 app.set('view engine', 'ejs'); //setup to use ejs files instead of html
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb'}));
 
 app.get('/reports', (req, res, next) => {
 	//TODO: Get all the tables
@@ -66,7 +64,6 @@ app.get('/reports', (req, res, next) => {
 	});
 });
 
-
 //Gets the html view to look at the data
 app.get('/itchy/poisonivy', (req, res, next) => {
 
@@ -78,23 +75,10 @@ app.get('/itchy/poisonivy', (req, res, next) => {
 });
 
 
-app.post('/reports', (req, res, next) => {
-	// TODO: get info from body/headers (probably body)
-	// TODO: Parse information into correct types
+app.post('/update', (req, res, next) => {
 	// TODO: Save images on server and get the location
-	// TODO: Create correct queries
-	// var newName = req.headers.name;
-	// var newReportNumber = req.headers.reportnumber;
-	// var query = 'INSERT INTO reports VALUES ("' + newName + '",' + newReportNumber + ')';
-	// connection.query(query, function (err, rows, fields) {
- //  	if (err)
- //  	{ 
- //  		throw err
- //  	}		 
- //   	res.send('Added '+ newName +  '  in db')
-	// });
-	console.log("Post Request \n" + JSON.stringify(req.body, null, '\t'));
-
+	
+	console.log("Post Request \n")// + JSON.stringify(req.body, null, '\t'));
 	var uid = req.body.uid;
 	var payloadType = req.body.payloadType;
 	var payload = req.body.payload;
@@ -103,53 +87,83 @@ app.post('/reports', (req, res, next) => {
 	if (payloadType === "SETTINGS") {
 		if (payload.hasOwnProperty("pref_screen_name")) {
 			var screenName = payload.pref_screen_name;
+			var UserQuery = 'Insert INTO Users (UID, screenname) VALUES (?,?) ON DUPLICATE KEY UPDATE screenname = ?;'
 
-			var UserQuery = 'Insert INTO Users (UID, screenname) VALUES (' +uid + ',' + ' "' + screenName + '") ON DUPLICATE KEY UPDATE screenname = "' + screenName + '";'
-
-			IvyConnection.query(UserQuery, function (err, rows, fields) {
+			IvyConnection.query(UserQuery,[uid,screenName,screenName], function (err, rows, fields) {
 				if (err) {
 					throw err;
 				}
 			});
-			// TODO: update the screen name for the uid, null or empty should be treated the same
 			jsonResponseString = '{"status" : "COMPLETE"}'
 		}
 		else if (paylod.hasOwnProperty("pref_email")) {
 			var email = payload.pref_email;
-			var UserQuery = 'Insert INTO Users (UID, email) VALUES (' + uid + ',' + ' "' + email + '") ON DUPLICATE KEY UPDATE email = "' + email + '";'
-			IvyConnection.query(UserQuery, function (err, rows, fields) {
+			var UserQuery = 'Insert INTO Users (UID, email) VALUES (?,?) ON DUPLICATE KEY UPDATE email = ?;'
+			IvyConnection.query(UserQuery,[uid,email,email], function (err, rows, fields) {
 				if (err) {
 					throw err;
 				}
-			});			jsonResponseString = '{"status" : "COMPLETE"}'
-
-			// TODO: update the email for the uid, null or empty should be treated the same
+			});			
 			jsonResponseString = '{"status" : "COMPLETE"}'
+
 		}
 	}
 	else if (payloadType === "REPORTS") {
 		var reportsList = payload;
 		
-			var addUserQuery = 'INSERT INTO Users(UID) VALUES ("' + uid + '") ON DUPLICATE key update UID=UID;';
-			IvyConnection.query(addUserQuery, function (err, rows, fields) {
+			var addUserQuery = 'INSERT INTO Users(UID) VALUES (?) ON DUPLICATE key update UID=UID;';
+			IvyConnection.query(addUserQuery, [uid],function (err, rows, fields) {
 				if (err) {
 					throw err;
 				}
 			});
-		
+	
 
 		for( var i = 0; i < reportsList.length; i++)
 		{
 
-			var reportQuery = 'INSERT INTO Reports VALUES ("' + uid +'", "' + reportsList[i].plant_type + '" ,' + reportsList[i].longitude +','+ reportsList[i].latitude+',"' + reportsList[i].date +'");';
-			IvyConnection.query(reportQuery, function (err, rows, fields) {
+			var reportQuery = 'INSERT INTO Reports VALUES (?, ?, ?, ?, ?);';
+			IvyConnection.query(reportQuery,[uid, reportsList[i].plant_type, reportsList[i].longitude,reportsList[i].latitude,reportsList[i].date ] ,function (err, rows, fields) {
 				if (err) {
 					throw err;
 				}
 			});
 
+			//Testing code to write the base64 to file
+			var fs = require('fs');
+			fs.writeFile("test.txt", reportsList[i].images[0], function(err) {
+				if (err)
+					throw err; 
+
+			})
+			// Loop through each image if there are images and give it a unique path to save
+			if(reportsList[i].images != undefined)
+			{
+				console.log("Inserting images")
+				for(var j = 0; j < reportsList[i].images.length;j++)
+				{
+					var imagePath = "../images/" + shortid.generate()+ ".png"
+					console.log(imagePath);
+					require("fs").writeFile(imagePath, reportsList[i].images[j], 'base64', function(err) 
+					{
+						if(err)
+						{
+  							console.log(err);
+  						}
+					});
+					//Insert image locations in database
+					var imageQuery = 'INSERT INTO Image_Locations VALUES(?,?)';
+					IvyConnection.query(imageQuery,[uid,imagePath], function (err, rows, fields)
+					{
+						if (err) 
+						{
+							throw err;
+						}
+					});
+				}
+			}
 		}
-		// TODO: add the list of reports to the database
+
 		jsonResponseString = '{"status" : "COMPLETE"}'
 	}
 	else {

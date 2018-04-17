@@ -250,17 +250,62 @@ app.get('/sendphotos', (req, res, next) => {
   	date = date.replaceAll(" ", "-")
   	var filename = "/home/ubuntu/server/images/Backup-" + date + ".zip"
 
-  	var zipFolder = require('zip-folder');
- 
-	zipFolder('/home/ubuntu/server/images', 'archive.zip', function(err) {
-		if(err) {
-		    console.log('oh no!', err);
-		} else {
-		    console.log('EXCELLENT');
-		}
+  	var archiver = require('archiver');
+  	// create a file to stream archive data to.
+	var output = fs.createWriteStream(__dirname + '/example.zip');
+	var archive = archiver('zip', {
+	  zlib: { level: 9 } // Sets the compression level.
 	});
 
-	res.sendFile('/home/ubuntu/server/PoisonIvyServerDB/archive.zip')
+	// listen for all archive data to be written
+	// 'close' event is fired only when a file descriptor is involved
+	output.on('close', function() {
+	  console.log('archiver has closed.');
+	});
+
+	// This event is fired when the data source is drained no matter what was the data source.
+	// It is not part of this library but rather from the NodeJS Stream API.
+	// @see: https://nodejs.org/api/stream.html#stream_event_end
+	output.on('end', function() {
+	  console.log('Data has been drained');
+	});
+	 
+	// good practice to catch warnings (ie stat failures and other non-blocking errors)
+	archive.on('warning', function(err) {
+	  if (err.code === 'ENOENT') {
+	    console.log("File not found")
+	  } else {
+	    // throw error
+	    throw err;
+	  }
+	});
+
+	// good practice to catch this error explicitly
+	archive.on('error', function(err) {
+	  throw err;
+	});
+
+	// pipe archive data to the file
+	archive.pipe(output);
+
+
+	// append files from a sub-directory, putting its contents at the root of archive
+	archive.glob('/home/ubuntu/server/images/*.png', false);
+
+	//archive.pipe(response)
+	archive.finalize();
+
+
+	res.pipe('/home/ubuntu/server/PoisonIvyServerDB/example.zip')
+
+
+
+
+
+
+
+
+
 	
 });
 

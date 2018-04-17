@@ -26,6 +26,8 @@ var IvyConnection = mysql.createConnection({
 
 IvyConnection.connect()
 
+//~~~~~~~~~~~v~~~v~~~~~~~~~~EDITED~~~~~~~~~~v~~~~~~~~~~~~~~~~~~
+var routes = require('./views')(app);
 
 
 //Set http connection
@@ -61,16 +63,6 @@ app.get('/reports', (req, res, next) => {
   		//console.log(JSON.stringify(response))
   		res.send(response)
 	});
-});
-
-//Gets the html view to look at the data
-app.get('/itchy/poisonivy', (req, res, next) => {
-
-	res.format({
-		html: () => {
-			res.render('index.ejs')
-		}
-	})
 });
 
 

@@ -3,6 +3,7 @@ var bodyParser = require('body-parser')
 var shortid = require('shortid')
 var app = express();
 var sleep = require('sleep');
+var fs = require('fs')
 
 //Open db Connection
 var mysql = require('mysql')
@@ -183,7 +184,97 @@ app.post('/update', (req, res, next) => {
 	res.send(JSON.parse(jsonResponseString));
 });
 
+app.get('/viewreports', (req, res, next) => {
+	var selectReportsQuery = 'Select * from Reports';
+	IvyConnection.query(selectReportsQuery, function (err, rows, fields)
+	{
+		if (err) 
+		{
+			throw err;
+		}
+		var response = "Report ID, UID, Plant Type, Latitude, Longitude, Time Stamp \n"
 
+  		for (i = 0; i < rows.length; i++)
+  		{
+  			response += (rows[i].reportID +"," + rows[i].UID+ "," +  rows[i].plant_type +"," + rows[i].latitude + "," + rows[i].longitude + "," + rows[i].date_time + "\n")
+  		}
+  		
+  		var date = new Date().toString();
+  		date = date.substr(0, date.length - 15 )
+  		date = date.replaceAll(" ", "-")
+  		var filename = "/home/ubuntu/server/reports/Reports" + date + ".csv"
+  		 console.log(filename)
+  		fs.writeFile(filename, response,  function(err)  {
+			if(err) { console.log(err); }
+					res.sendFile(filename)
+
+		});
+
+	});
+});
+
+
+app.get('/viewusers', (req, res, next) => {
+	var selectReportsQuery = 'Select * from Users';
+	IvyConnection.query(selectReportsQuery, function (err, rows, fields)
+	{
+		if (err) 
+		{
+			throw err;
+		}
+		var response = "UID, Email, Screen Name\n"
+
+  		for (i = 0; i < rows.length; i++)
+  		{
+  			response += (rows[i].UID +"," + rows[i].email+ "," +  rows[i].screenname + "\n")
+  		}
+  		
+  		var date = new Date().toString();
+  		date = date.substr(0, date.length - 15 )
+  		date = date.replaceAll(" ", "-")
+  		var filename = "/home/ubuntu/server/users/Users" + date + ".csv"
+  		 console.log(filename)
+  		fs.writeFile(filename, response,  function(err)  {
+			if(err) { console.log(err); }
+					res.sendFile(filename)
+
+		});
+
+	});
+});
+
+app.get('/sendphotos', (req, res, next) => {
+	console.log("Creating Zip");
+	var date = new Date().toString();
+  	date = date.substr(0, date.length - 15 )
+  	date = date.replaceAll(" ", "-")
+  	var filename = "/home/ubuntu/server/images/Backup-" + date + ".zip"
+
+  	var zipFolder = require('zip-folder');
+ 
+	zipFolder('/home/ubuntu/server/images', 'archive.zip', function(err) {
+		if(err) {
+		    console.log('oh no!', err);
+		} else {
+		    console.log('EXCELLENT');
+		}
+	});
+
+	res.sendFile('/home/ubuntu/server/PoisonIvyServerDB/archive.zip')
+	
+});
+
+
+String.prototype.replaceAll = function(search, replace)
+{
+    //if replace is not sent, return original string otherwise it will
+    //replace search string with 'undefined'.
+    if (replace === undefined) {
+        return this.toString();
+    }
+
+    return this.replace(new RegExp('[' + search + ']', 'g'), replace);
+};
 
 app.listen(app.get('port'), () => {
 	console.log('Listening on: ', app.get('port'))

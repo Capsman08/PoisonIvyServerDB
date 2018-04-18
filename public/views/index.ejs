@@ -40,18 +40,40 @@
 						<th scope="col">Latitude</th>
 						<th scope="col">Longitude</th>
 						<th scope="col">Date/Time</th>
-						<th scope="col">Image Location</th>
 					</tr>
 
 				</thead>
-				<tbody>
-					<th scope="row">1</th>
-					<td>1</td>
-					<td>Creeping</td>
-					<td>10</td>
-					<td>20</td>
-					<td>Wednesday</td>
-					<td>Blacksburg</td>
+				<tbody id="reports-table-body">
+					<script>
+
+						var xhttp = new XMLHttpRequest();
+				        xhttp.onload = function() {
+						    if (this.status == 200) {
+						    	var responseText = $.parseJSON(this.responseText);
+
+
+						      	//populate the table
+						      	for (i = 0; i < responseText.length; i++)
+						      	{
+					      			var newRowID = "<th scope='row'>" + responseText[i].reportID + "</th>"; 
+					      			var newRowUID = "<td>" + responseText[i].UID + "</td>";
+					      			var newRowPlantType = "<td>" + responseText[i].plant_type + "</td>";
+					      			var newRowLatitude = "<td>" + responseText[i].latitude + "</td>";
+					      			var newRowLongitude = "<td>" + responseText[i].longitude + "</td>";
+					      			var newRowDateTime = "<td>" + responseText[i].date_time + "</td>";
+					      			var newRow = "<tr>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + "</tr>";
+					      			$("#reports-table-body").append(newRow);
+						      	}
+
+						      
+						    }
+					  	};
+
+					  	xhttp.open('GET', '/reports');
+					  	xhttp.send();
+
+					</script>
+
 
 				</tbody>
 			</table>
@@ -64,7 +86,24 @@
 			 	</ul>
 			</nav>
 
-			<button id="download-csv-button" type="button" class="btn btn-light">Download CSV file</button>
+			<button id="download-reports-csv-button" type="button" class="btn btn-light download-csv-button">Download CSV file</button>
+			<script>
+
+				$("#download-reports-csv-button").click( function () {
+					var xhttp = new XMLHttpRequest();
+			        xhttp.onload = function() {
+					    if (this.status == 200) {
+					    	responseText = this.responseText;
+					      	window.alert(responseText);
+					      
+					    }
+				  	};
+
+				  	xhttp.open('GET', '/viewreports');
+				  	xhttp.send();
+				});
+
+			</script>
 
 			<h3 id="data-type-title">User Data</h3>
 
@@ -77,10 +116,34 @@
 					</tr>
 
 				</thead>
-				<tbody>
-					<th scope="row">1</th>
-					<td>foo@bar.com</td>
-					<td>Xx_foobar_xX</td>
+				<tbody id="users-table-body">
+					
+					<script>
+
+						var xhttp = new XMLHttpRequest();
+				        xhttp.onload = function() {
+						    if (this.status == 200) {
+						    	var responseText = $.parseJSON(this.responseText);
+
+
+						      	//populate the table
+						      	for (i = 0; i < responseText.length; i++)
+						      	{
+					      			var newRowUID = "<th scope='row'>" + responseText[i].UID + "</th>"; 
+					      			var newRowEmail = "<td>" + responseText[i].email + "</td>";
+					      			var newRowScreenname = "<td>" + responseText[i].screenname + "</td>";
+					      			var newRow = "<tr>" + newRowUID + newRowEmail + newRowScreenname + "</tr>";
+					      			$("#users-table-body").append(newRow);
+						      	}
+
+						      
+						    }
+					  	};
+
+					  	xhttp.open('GET', '/users');
+					  	xhttp.send();
+
+					</script>
 
 				</tbody>
 			</table>
@@ -93,7 +156,24 @@
 			 	</ul>
 			</nav>
 
-			<button id="download-csv-button" type="button" class="btn btn-light">Download CSV file</button>
+			<button id="download-users-csv-button"  type="button" class="btn btn-light download-csv-button">Download CSV file</button>
+			<script>
+
+				$("#download-users-csv-button").click( function () {
+					var xhttp = new XMLHttpRequest();
+			        xhttp.onload = function() {
+					    if (this.status == 200) {
+					    	responseText = this.responseText;
+					      	window.alert(responseText);
+					      
+					    }
+				  	};
+
+				  	xhttp.open('GET', '/viewusers');
+				  	xhttp.send();
+				});
+
+			</script>
 
 		</div> 
 

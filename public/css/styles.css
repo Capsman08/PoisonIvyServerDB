@@ -76,7 +76,7 @@
 	display: inline-block;
 }
 
-#download-csv-button {
+.download-csv-button {
 	text-align: right;
 	display: block;
 	position: absolute;

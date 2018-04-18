@@ -26,7 +26,6 @@ var IvyConnection = mysql.createConnection({
 
 IvyConnection.connect()
 
-//~~~~~~~~~~~v~~~v~~~~~~~~~~EDITED~~~~~~~~~~v~~~~~~~~~~~~~~~~~~
 var routes = require('./views')(app);
 
 
@@ -45,25 +44,18 @@ app.use(bodyParser.urlencoded({limit: '50mb'}));
 
 app.get('/reports', (req, res, next) => {
 	console.log("Get Request")
-	connection.query('SELECT * from reports', function (err, rows, fields) {
-  		if (err) 
-  		{
-  			throw err
-  		}
-		var response = "";
-		for (i = 0; i < rows.length; i++)
-  		{
-  			response +=  "Name: " + rows[i].name + ", ReportNumber: " + rows[i].reportNumber + "\n";
-  		}
-
-  		// for (i = 0; i < rows.length; i++)
-  		// {
-  		// 	response += ("UID: " + rows[i]. +", Type: " + rows[i].plant_type +", Lat: " + rows[i].latitude + ", Long: " + rows[i].longitude + "\n")
-  		// }
-  		//console.log(JSON.stringify(response))
-  		res.send(response)
+	IvyConnection.query('SELECT * from Reports', function (err, rows, fields) {
+  		res.send(rows);
 	});
 });
+
+app.get('/users', (req, res, next) => {
+	console.log("Get Users");
+	IvyConnection.query('SELECT * from Users', function (err, rows, fields) {
+		res.send(rows);
+	})
+})
+
 
 
 app.post('/update', (req, res, next) => {

@@ -150,12 +150,20 @@ app.post('/update', (req, res, next) => {
 				var repId = row.insertId;
 
 				// Loop through each image if there are images and give it a unique path to save
+
+
+				var dir = '../images/' + repId;
+
+				if (!fs.existsSync(dir))
+				{
+				    fs.mkdirSync(dir);
+				}
 				if(reportsList[i].images.length != 0 )
 				{
 					console.log("Inserting images")
 					for(var j = 0; j < reportsList[i].images.length;j++)
 					{
-						var imagePath = "../images/ReportNumber" +repId+ ".png"
+						var imagePath = "../images/" + repId + "/" +shortid.generate()+ ".png"
 						console.log(imagePath);
 						require("fs").writeFile(imagePath, reportsList[i].images[j], 'base64', function(err) 
 						{
@@ -182,13 +190,6 @@ app.post('/update', (req, res, next) => {
 
 		
 
-			//Testing code to write the base64 to file
-			// var fs = require('fs');
-			// fs.writeFile("test.txt", reportsList[i].images[0], function(err) {
-			// 	if (err)
-			// 		throw err; 
-
-			// })
 						
 		}
 
@@ -225,7 +226,7 @@ app.get('/viewreports', (req, res, next) => {
   		 console.log(filename)
   		fs.writeFile(filename, response,  function(err)  {
 			if(err) { console.log(err); }
-					res.sendFile(filename)
+					res.download(filename,"Reports-" + date + ".csv")
 
 		});
 
@@ -255,14 +256,34 @@ app.get('/viewusers', (req, res, next) => {
   		 console.log(filename)
   		fs.writeFile(filename, response,  function(err)  {
 			if(err) { console.log(err); }
-					res.sendFile(filename)
+					res.download(filename,"Users-"+date+".csv")
 
 		});
 
 	});
 });
-  	var zip = require('express-easy-zip');
-  	app.use(zip());
+var zip = require('express-easy-zip');
+app.use(zip());
+
+app.get('sendphotos/:id', (req, res) => {
+	var id = req.params.id;
+	console.log("Sending Zip of " + id);
+	var date = new Date().toString();
+  	date = date.substr(0, date.length - 15 )
+  	date = date.replaceAll(" ", "-")
+  	var filename = "Photos-ID-"+ id+ "-"+ date;
+
+  		res.zip({
+        files: [
+            { 
+              comment: 'comment-for-the-file',
+                 date: new Date(),
+                 type: 'file' },
+            { path: '/home/ubuntu/server/images/'+ id, name: 'Images' }    //or a folder 
+        ],
+        filename: filename+'.zip'
+    });
+});
 
 
 app.use('/sendphotos', (req, res) => {
@@ -270,7 +291,7 @@ app.use('/sendphotos', (req, res) => {
 	var date = new Date().toString();
   	date = date.substr(0, date.length - 15 )
   	date = date.replaceAll(" ", "-")
-  	var filename = "Backup-" + date;
+  	var filename = "Photos-" + date;
   		res.zip({
         files: [
             { 
@@ -279,7 +300,7 @@ app.use('/sendphotos', (req, res) => {
                  type: 'file' },
             { path: '/home/ubuntu/server/images/', name: 'Images' }    //or a folder 
         ],
-        filename: 'zip-file-name.zip'
+        filename: filename+'.zip'
     });
 });
 

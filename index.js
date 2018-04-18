@@ -128,7 +128,7 @@ app.post('/update', (req, res, next) => {
 					console.log("Inserting images")
 					for(var j = 0; j < reportsList[i].images.length;j++)
 					{
-						var imagePath = "../images/" + shortid.generate()+ ".png"
+						var imagePath = "../images/ReportNumber" +repId+ ".png"
 						console.log(imagePath);
 						require("fs").writeFile(imagePath, reportsList[i].images[j], 'base64', function(err) 
 						{
@@ -234,72 +234,31 @@ app.get('/viewusers', (req, res, next) => {
 
 	});
 });
+  	var zip = require('express-easy-zip');
+  	app.use(zip());
 
-app.get('/sendphotos', (req, res, next) => {
-	console.log("Creating Zip");
+
+app.use('/sendphotos', (req, res) => {
+	console.log("Sending Zip");
 	var date = new Date().toString();
   	date = date.substr(0, date.length - 15 )
   	date = date.replaceAll(" ", "-")
-  	var filename = "/home/ubuntu/server/images/Backup-" + date + ".zip"
-
-  	var archiver = require('archiver');
-  	// create a file to stream archive data to.
-	var output = fs.createWriteStream(__dirname + '/example.zip');
-	var archive = archiver('zip', {
-	  zlib: { level: 9 } // Sets the compression level.
-	});
-
-	// listen for all archive data to be written
-	// 'close' event is fired only when a file descriptor is involved
-	output.on('close', function() {
-	  console.log('archiver has closed.');
-	});
-
-	// This event is fired when the data source is drained no matter what was the data source.
-	// It is not part of this library but rather from the NodeJS Stream API.
-	// @see: https://nodejs.org/api/stream.html#stream_event_end
-	output.on('end', function() {
-	  console.log('Data has been drained');
-	});
-	 
-	// good practice to catch warnings (ie stat failures and other non-blocking errors)
-	archive.on('warning', function(err) {
-	  if (err.code === 'ENOENT') {
-	    console.log("File not found")
-	  } else {
-	    // throw error
-	    throw err;
-	  }
-	});
-
-	// good practice to catch this error explicitly
-	archive.on('error', function(err) {
-	  throw err;
-	});
-
-	// pipe archive data to the file
-	archive.pipe(output);
-
-
-	// append files from a sub-directory, putting its contents at the root of archive
-	archive.glob('/home/ubuntu/server/images/*.png', false);
-
-	//archive.pipe(response)
-	archive.finalize();
-
-
-	res.pipe('/home/ubuntu/server/PoisonIvyServerDB/example.zip')
-
-
-
-
-
-
-
-
-
-	
+  	var filename = "Backup-" + date;
+  		res.zip({
+        files: [
+            { 
+              comment: 'comment-for-the-file',
+                 date: new Date(),
+                 type: 'file' },
+            { path: '/home/ubuntu/server/images/', name: 'Images' }    //or a folder 
+        ],
+        filename: 'zip-file-name.zip'
+    });
 });
+
+
+
+
 
 
 String.prototype.replaceAll = function(search, replace)

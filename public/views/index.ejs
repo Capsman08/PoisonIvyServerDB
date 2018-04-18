@@ -140,23 +140,6 @@
 			<form action='/viewreports' method='get'>
 				<button id="download-reports-csv-button" type="submit" class="btn btn-light download-csv-button">Download CSV file</button>
 			</form>
-			<script>
-
-				$("#download-reports-csv-button").click( function () {
-					var xhttp = new XMLHttpRequest();
-			        xhttp.onload = function() {
-					    if (this.status == 200) {
-					    	responseText = this.responseText;
-					      	window.alert(responseText);
-					      
-					    }
-				  	};
-
-				  	xhttp.open('GET', '/viewreports');
-				  	xhttp.send();
-				});
-
-			</script>
 
 			<h3 id="data-type-title">User Data</h3>
 
@@ -265,23 +248,7 @@
 			<form action='/viewusers' method='get'>
 				<button id="download-users-csv-button"  type="submit" class="btn btn-light download-csv-button">Download CSV file</button>
 			</form>
-			<!-- <script>
 
-				$("#download-users-csv-button").click( function () {
-					var xhttp = new XMLHttpRequest();
-			        xhttp.onload = function() {
-					    if (this.status == 200) {
-					    	responseText = this.responseText;
-					      	window.alert(responseText);
-					      
-					    }
-				  	};
-
-				  	xhttp.open('GET', '/viewusers');
-				  	xhttp.send();
-				});
-
-			</script> -->
 
 		</div> 
 

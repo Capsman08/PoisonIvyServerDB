@@ -50,27 +50,80 @@
 				        xhttp.onload = function() {
 						    if (this.status == 200) {
 						    	var responseText = $.parseJSON(this.responseText);
+						    	var numButtons = Math.ceil(responseText[0]['COUNT(*)'] / 10);
+						    	//add the nav buttons
+						    	for (i = 1; i < numButtons + 1; i++)
+						    	{	
+						    		var newButton = "<li class='page-item ' ><a class='page-link report-set'>" + i + "</a></li>";
+						    		$("#reports-table-selector").append(newButton);
+						    	}
+
+
+						      
+						    }
+					  	};
+
+					  	xhttp.open('GET', '/reportscount');
+					  	xhttp.send();
+
+						var xhttp2 = new XMLHttpRequest();
+				        xhttp2.onload = function() {
+						    if (this.status == 200) {
+						    	var responseText = $.parseJSON(this.responseText);
 
 
 						      	//populate the table
-						      	for (i = 0; i < responseText.length; i++)
+						      	for (i = 0; i < Math.min(responseText.length, 10); i++)
 						      	{
-					      			var newRowID = "<th scope='row'>" + responseText[i].reportID + "</th>"; 
-					      			var newRowUID = "<td>" + responseText[i].UID + "</td>";
-					      			var newRowPlantType = "<td>" + responseText[i].plant_type + "</td>";
-					      			var newRowLatitude = "<td>" + responseText[i].latitude + "</td>";
-					      			var newRowLongitude = "<td>" + responseText[i].longitude + "</td>";
-					      			var newRowDateTime = "<td>" + responseText[i].date_time + "</td>";
-					      			var newRow = "<tr>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + "</tr>";
+					      			var newRowID = "<th scope='row' class='dynamic-report'>" + responseText[i].reportID + "</th>"; 
+					      			var newRowUID = "<td class='dynamic-report'>" + responseText[i].UID + "</td>";
+					      			var newRowPlantType = "<td class='dynamic-report'>" + responseText[i].plant_type + "</td>";
+					      			var newRowLatitude = "<td class='dynamic-report'>" + responseText[i].latitude + "</td>";
+					      			var newRowLongitude = "<td class='dynamic-report'>" + responseText[i].longitude + "</td>";
+					      			var newRowDateTime = "<td class='dynamic-report'>" + responseText[i].date_time + "</td>";
+					      			var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + "</tr>";
 					      			$("#reports-table-body").append(newRow);
+
 						      	}
 
 						      
 						    }
 					  	};
 
-					  	xhttp.open('GET', '/reports');
-					  	xhttp.send();
+					  	xhttp2.open('GET', '/reports/0');
+					  	xhttp2.send();
+
+					  	//reset the table and add new stuff back in
+					  	$("body").on( 'click', '.report-set', function() {
+					  		$('.dynamic-report').remove();
+
+					  		var xhttp3 = new XMLHttpRequest();
+					        xhttp3.onload = function() {
+							    if (this.status == 200) {
+							    	var responseText = $.parseJSON(this.responseText);
+
+
+							      	//populate the table
+							      	for (i = 0; i < Math.min(responseText.length, 10); i++)
+							      	{
+						      			var newRowID = "<th scope='row' class='dynamic-report'>" + responseText[i].reportID + "</th>"; 
+						      			var newRowUID = "<td class='dynamic-report'>" + responseText[i].UID + "</td>";
+						      			var newRowPlantType = "<td class='dynamic-report'>" + responseText[i].plant_type + "</td>";
+						      			var newRowLatitude = "<td class='dynamic-report'>" + responseText[i].latitude + "</td>";
+						      			var newRowLongitude = "<td class='dynamic-report'>" + responseText[i].longitude + "</td>";
+						      			var newRowDateTime = "<td class='dynamic-report'>" + responseText[i].date_time + "</td>";
+						      			var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + "</tr>";
+						      			$("#reports-table-body").append(newRow);
+							      	}
+
+							      
+							    }
+						  	};
+
+						  	xhttp3.open('GET', '/reports/' + ($(this).text() - 1));
+						  	xhttp3.send();
+
+					  	});
 
 					</script>
 
@@ -79,14 +132,14 @@
 			</table>
 
 			<nav id="data-page-selector" aria-label="Page navigation example">
-			 	<ul class="pagination">
-			    	<li class="page-item"><a class="page-link" href="#">Previous</a></li>
-			    	<li class="page-item"><a class="page-link" href="#">1</a></li>
-			    	<li class="page-item"><a class="page-link" href="#">Next</a></li>
+			 	<ul id="reports-table-selector" class="pagination">
+
 			 	</ul>
 			</nav>
 
-			<button id="download-reports-csv-button" type="button" class="btn btn-light download-csv-button">Download CSV file</button>
+			<form action='/viewreports' method='get'>
+				<button id="download-reports-csv-button" type="submit" class="btn btn-light download-csv-button">Download CSV file</button>
+			</form>
 			<script>
 
 				$("#download-reports-csv-button").click( function () {
@@ -124,15 +177,36 @@
 				        xhttp.onload = function() {
 						    if (this.status == 200) {
 						    	var responseText = $.parseJSON(this.responseText);
+						    	var numButtons = Math.ceil(responseText[0]['COUNT(*)'] / 10);
+						    	//add the nav buttons
+						    	for (i = 1; i < numButtons + 1; i++)
+						    	{	
+						    		var newButton = "<li class='page-item ' ><a class='page-link user-set'>" + i + "</a></li>";
+						    		$("#users-table-selector").append(newButton);
+						    	}
+
+
+						      
+						    }
+					  	};
+					  	xhttp.open('GET', '/userscount');
+					  	xhttp.send();
+
+
+
+						var xhttp2 = new XMLHttpRequest();
+				        xhttp2.onload = function() {
+						    if (this.status == 200) {
+						    	var responseText = $.parseJSON(this.responseText);
 
 
 						      	//populate the table
 						      	for (i = 0; i < responseText.length; i++)
 						      	{
-					      			var newRowUID = "<th scope='row'>" + responseText[i].UID + "</th>"; 
-					      			var newRowEmail = "<td>" + responseText[i].email + "</td>";
-					      			var newRowScreenname = "<td>" + responseText[i].screenname + "</td>";
-					      			var newRow = "<tr>" + newRowUID + newRowEmail + newRowScreenname + "</tr>";
+					      			var newRowUID = "<th scope='row' class='dynamic-user'>" + responseText[i].UID + "</th>"; 
+					      			var newRowEmail = "<td class='dynamic-user'>" + responseText[i].email + "</td>";
+					      			var newRowScreenname = "<td class='dynamic-user'>" + responseText[i].screenname + "</td>";
+					      			var newRow = "<tr class='dynamic-user'>" + newRowUID + newRowEmail + newRowScreenname + "</tr>";
 					      			$("#users-table-body").append(newRow);
 						      	}
 
@@ -140,8 +214,42 @@
 						    }
 					  	};
 
-					  	xhttp.open('GET', '/users');
-					  	xhttp.send();
+					  	xhttp2.open('GET', '/users');
+					  	xhttp2.send();
+
+
+					  	//reset the table and add new stuff back in
+					  	$("body").on( 'click', '.user-set', function() {
+					  		$('.dynamic-user').remove();
+
+					  		var xhttp3 = new XMLHttpRequest();
+					        xhttp3.onload = function() {
+							    if (this.status == 200) {
+							    	var responseText = $.parseJSON(this.responseText);
+
+
+							      	//populate the table
+							      	for (i = 0; i < Math.min(responseText.length, 10); i++)
+							      	{
+						      			var newRowUID = "<th scope='row' class='dynamic-user'>" + responseText[i].UID + "</th>"; 
+						      			var newRowEmail = "<td class='dynamic-user'>" + responseText[i].email + "</td>";
+						      			var newRowScreenname = "<td class='dynamic-user'>" + responseText[i].screenname + "</td>";
+						      			var newRow = "<tr class='dynamic-user'>" + newRowUID + newRowEmail + newRowScreenname + "</tr>";
+						      			$("#users-table-body").append(newRow);
+							      	}
+
+							      
+							    }
+						  	};
+
+						  	xhttp3.open('GET', '/users/' + ($(this).text() - 1));
+						  	xhttp3.send();
+
+					  	});
+
+
+
+
 
 					</script>
 
@@ -149,15 +257,15 @@
 			</table>
 
 			<nav id="data-page-selector" aria-label="Page navigation example">
-			 	<ul class="pagination">
-			    	<li class="page-item"><a class="page-link" href="#">Previous</a></li>
-			    	<li class="page-item"><a class="page-link" href="#">1</a></li>
-			    	<li class="page-item"><a class="page-link" href="#">Next</a></li>
+			 	<ul id='users-table-selector' class="pagination">
+
 			 	</ul>
 			</nav>
 
-			<button id="download-users-csv-button"  type="button" class="btn btn-light download-csv-button">Download CSV file</button>
-			<script>
+			<form action='/viewusers' method='get'>
+				<button id="download-users-csv-button"  type="submit" class="btn btn-light download-csv-button">Download CSV file</button>
+			</form>
+			<!-- <script>
 
 				$("#download-users-csv-button").click( function () {
 					var xhttp = new XMLHttpRequest();
@@ -173,7 +281,7 @@
 				  	xhttp.send();
 				});
 
-			</script>
+			</script> -->
 
 		</div> 
 

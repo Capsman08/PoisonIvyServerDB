@@ -49,12 +49,47 @@ app.get('/reports', (req, res, next) => {
 	});
 });
 
+//Gets up to 10 report records at the given offset
+app.get('/reports/:idrange', (req, res, next) => {
+	console.log("Get Request")
+	var range = req.params.idrange * 10;
+	IvyConnection.query('SELECT * from Reports LIMIT ' + range + ',10', function (err, rows, fields) {
+  		res.send(rows);
+	});
+});
+
+//gets the number of reports in the reports table
+app.get('/reportscount', (req, res, next) => {
+	console.log("Get request");
+	IvyConnection.query('SELECT COUNT(*) FROM Reports', function (err, num, fields) {
+		res.send(num);
+	});
+});
+
+
 app.get('/users', (req, res, next) => {
 	console.log("Get Users");
 	IvyConnection.query('SELECT * from Users', function (err, rows, fields) {
 		res.send(rows);
 	})
 })
+
+//Gets up to 10 user records at the given offset
+app.get('/users/:idrange', (req, res, next) => {
+	console.log("Get Requst");
+	var range = req.params.idrange * 10;
+	IvyConnection.query('SELECT * from Users LIMIT ' + range + ',10', function (err, rows, fields) {
+		res.send(rows);
+	});
+});
+
+//gets the number of users in the reports table
+app.get('/userscount', (req, res, next) => {
+	console.log("Get request");
+	IvyConnection.query('SELECT COUNT(*) FROM Users', function (err, num, fields) {
+		res.send(num);
+	});
+});
 
 
 

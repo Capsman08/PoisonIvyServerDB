@@ -229,8 +229,8 @@ app.get('/viewreports', (req, res, next) => {
 					res.download(filename,"Reports-" + date + ".csv")
 
 		});
-
 	});
+	res.end();
 });
 
 
@@ -261,33 +261,15 @@ app.get('/viewusers', (req, res, next) => {
 		});
 
 	});
+	res.end();
 });
+
+
 var zip = require('express-easy-zip');
 app.use(zip());
 
-app.get('sendphotos/:id', (req, res) => {
-	var id = req.params.id;
-	console.log("Sending Zip of " + id);
-	var date = new Date().toString();
-  	date = date.substr(0, date.length - 15 )
-  	date = date.replaceAll(" ", "-")
-  	var filename = "Photos-ID-"+ id+ "-"+ date;
-
-  		res.zip({
-        files: [
-            { 
-              comment: 'comment-for-the-file',
-                 date: new Date(),
-                 type: 'file' },
-            { path: '/home/ubuntu/server/images/'+ id, name: 'Images' }    //or a folder 
-        ],
-        filename: filename+'.zip'
-    });
-});
-
-
-app.use('/sendphotos', (req, res) => {
-	console.log("Sending Zip");
+app.get('/sendphotos', (req, res, next) => {
+	console.log("Sending Zip. no id");
 	var date = new Date().toString();
   	date = date.substr(0, date.length - 15 )
   	date = date.replaceAll(" ", "-")
@@ -302,6 +284,34 @@ app.use('/sendphotos', (req, res) => {
         ],
         filename: filename+'.zip'
     });
+
+  	console.log("sent")
+
+
+})
+
+//Gets up to 10 user records at the given offset
+app.get('/sendphotos/:id', (req, res, next) => {
+	var id = req.params.id;
+	console.log("Sending Zip of " + id);
+	var date = new Date().toString();
+  	date = date.substr(0, date.length - 15 )
+  	date = date.replaceAll(" ", "-")
+  	var filename = "Photos-ID-"+ id+ "-"+ date;
+
+  		res.zip({
+        files: [
+            { 
+              comment: 'comment-for-the-file',
+                 date: new Date(),
+                 type: 'file' },
+            { path: '/home/ubuntu/server/images/'+ id + '/', name: 'Images' }    //or a folder 
+        ],
+        filename: filename+'.zip'
+    });
+  	console.log("sent " + id)
+
+
 });
 
 

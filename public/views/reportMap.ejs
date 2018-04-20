@@ -53,50 +53,63 @@
 		        var xhttp = new XMLHttpRequest();
 		        xhttp.onload = function() {
 				    if (this.status == 200) {
-				    	responseText = this.responseText;
+				    	var responseText = $.parseJSON(this.responseText);
+				    	var numReports = responseText[0]['COUNT(*)'];
+
+				    	console.log(numReports)
+				    	// add a marker for each report
+
+				    	var responseText2;
+				    	var xhttp2 = new XMLHttpRequest();
+				    	xhttp2.onload = function () {
+				    		responseText2 = $.parseJSON(this.responseText);
+				    		console.log(responseText2);
+
+
+
+
+				    		for (i = 0; i < numReports; i++)
+						  	{
+						  		console.log(responseText2[i].latitude)
+
+
+				  				var marker = new google.maps.Marker({
+								    position: {lat: responseText2[i].longitude, lng: responseText2[i].latitude},
+							  	});
+
+						        marker.setMap(map);
+
+						        marker.addListener('click', function () {
+						        	//change map view
+						        	map.panTo(marker.getPosition());
+						        	map.setZoom(15);
+						        	//update data in the view
+						        	$("#report-id").text("ID: " + responseText2[i].reportID);
+						        	$("#report-plant-type").text("Plant Type: " + responseText2[i].plant_type);
+						        	$("#report-latitude").text("Latitude: " + responseText2[i].latitude);
+						        	$("#report-longitude").text("Longitude: " + responseText2[i].longitude);
+				        		});
+
+					  		}	
+
+
+
+
+
+
+
+
+				    	}
+				    	xhttp2.open('GET', '/reports');
+					  	xhttp2.send();
+
+					  	
+
 				    }
 			  	};
 			  	xhttp.open('GET', '/reportscount');
 			  	xhttp.send();
 
-
-			  	// add a marker for each report
-			  	for (i = 0; i < numReports; i++)
-			  	{
-
-
-			  		xhttp = new XMLHttpRequest();
-			  		xhttp.onload = function() {
-			  			if (this.status == 200) {
-			  				responseText = this.responseText;
-
-			  				var marker = new google.maps.Marker({
-							    position: {lat: responseText[i].latitude, lng: responseText[i].Longitude},
-							    map: map
-						  	});
-
-					        marker.setMap(map);
-
-					        marker.addListener('click', function () {
-					        	//change map view
-					        	map.panTo(marker.getPosition());
-					        	map.setZoom(12);
-					        	//update data in the view
-
-
-			        		});
-
-			  			}
-
-			  		}
-
-			  		xhttp.open('GET', '/reports');
-			  		xhttp.send();
-
-			        //loop through all reports and make a marker for each one.
-			        
-
-		    	}
 	      	}
 
     		</script>

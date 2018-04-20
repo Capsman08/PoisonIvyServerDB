@@ -58,6 +58,14 @@ app.get('/reports/:idrange', (req, res, next) => {
 	});
 });
 
+app.get('/report/:id', (req, res, next) => {
+	console.log("Get Request");
+	var id = req.params.id;
+	IvyConnection.query('SELECT * FROM Reports WHERE reportID = ' + id + ' LIMIT 1', function (err, record, fields) {
+		res.send(record);
+	});
+});
+
 //gets the number of reports in the reports table
 app.get('/reportscount', (req, res, next) => {
 	console.log("Get request");

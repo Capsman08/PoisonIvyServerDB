@@ -40,6 +40,7 @@
 						<th scope="col">Latitude</th>
 						<th scope="col">Longitude</th>
 						<th scope="col">Date/Time</th>
+						<th scope="col">Images</th>
 					</tr>
 
 				</thead>
@@ -81,6 +82,10 @@
 					      			var newRowLatitude = "<td class='dynamic-report'>" + responseText[i].latitude + "</td>";
 					      			var newRowLongitude = "<td class='dynamic-report'>" + responseText[i].longitude + "</td>";
 					      			var newRowDateTime = "<td class='dynamic-report'>" + responseText[i].date_time + "</td>";
+					      			//add a button to view images
+					      			var newRowImages;
+					      			var xhttp3
+
 					      			var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + "</tr>";
 					      			$("#reports-table-body").append(newRow);
 

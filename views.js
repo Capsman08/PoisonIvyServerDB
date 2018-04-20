@@ -9,4 +9,17 @@ module.exports = function(app) {
 		})
 	});
 
+
+	app.get('/itchy/poisonivymap', (req, res, next) => {
+
+		console.log("html request")
+		res.format({
+			html: () => {
+				res.render('reportMap.ejs');
+			}
+		})
+	});
+
+
 }
+

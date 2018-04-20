@@ -91,6 +91,18 @@ app.get('/userscount', (req, res, next) => {
 	});
 });
 
+app.get('/hasphotos/:id', (req, res, next) => {
+	var id = req.params.id;
+	var dir = '../images/' + id;
+	if (fs.existsSync(dir))
+	{
+	    res.send('true')
+	}
+	else{
+		res.send('false');
+	}
+});
+
 
 
 app.post('/update', (req, res, next) => {
@@ -143,7 +155,7 @@ app.post('/update', (req, res, next) => {
 
 			var i = k; 
 			var reportQuery = 'INSERT INTO Reports VALUES (null, ?, ?, ?, ?, ?);';
-			IvyConnection.query(reportQuery,[uid, reportsList[i].plant_type, reportsList[i].longitude,reportsList[i].latitude,reportsList[i].date ] ,function (err, row, fields) {
+			IvyConnection.query(reportQuery,[uid, reportsList[i].plant_type, reportsList[i].latitude,reportsList[i].longitude,reportsList[i].date ] ,function (err, row, fields) {
 				if (err) {
 					throw err;
 				}
@@ -158,6 +170,7 @@ app.post('/update', (req, res, next) => {
 				{
 				    fs.mkdirSync(dir);
 				}
+				console.log(reportsList[i].images.length);
 				if(reportsList[i].images.length != 0 )
 				{
 					console.log("Inserting images")

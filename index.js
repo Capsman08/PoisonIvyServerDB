@@ -115,7 +115,7 @@ app.post('/update', (req, res, next) => {
 			});
 			jsonResponseString = '{"status" : "COMPLETE"}'
 		}
-		else if (paylod.hasOwnProperty("pref_email")) {
+		else if (payload.hasOwnProperty("pref_email")) {
 			var email = payload.pref_email;
 			var UserQuery = 'Insert INTO Users (UID, email) VALUES (?,?) ON DUPLICATE KEY UPDATE email = ?;'
 			IvyConnection.query(UserQuery,[uid,email,email], function (err, rows, fields) {

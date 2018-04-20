@@ -222,15 +222,15 @@ app.get('/viewreports', (req, res, next) => {
   		var date = new Date().toString();
   		date = date.substr(0, date.length - 15 )
   		date = date.replaceAll(" ", "-")
-  		var filename = "/home/ubuntu/server/reports/Reports" + date + ".csv"
-  		 console.log(filename)
+  		var filename = "/home/ubuntu/server/reports/Reports-" + date + ".csv"
+  		console.log(filename)
   		fs.writeFile(filename, response,  function(err)  {
 			if(err) { console.log(err); }
 					res.download(filename,"Reports-" + date + ".csv")
 
 		});
 	});
-	res.end();
+	//res.end();
 });
 
 
@@ -261,7 +261,7 @@ app.get('/viewusers', (req, res, next) => {
 		});
 
 	});
-	res.end();
+	//res.end();
 });
 
 

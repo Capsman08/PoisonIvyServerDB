@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Poison Ivy Reports Map</title>
+
+		<link rel="stylesheet" href="/css/mapStyles.css">
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+		<!-- <link rel="stylesheet" href="/maps/documentation/javascript/demos/demos.css"> -->
+ 
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script type="text/javascript" src="/js/scripts.js"></script>
+
+	</head>
+	<body >
+	<div>
+		<div id="map" style="width: 100%; height: 100%; position: absolute;">
+         	<div id="map-canvas"></div>
+     	</div>
+
+ 		<div id="info-container" >
+			<div id="inner-container">
+				<div id="report-block" class="inner-block">
+					<ul>
+						<li id="report-id">ID: 1</li>
+						<li id="report-plant-type">Plant Type: Creeping</li>
+						<li id="report-latitude">Latitude: 10</li>
+						<li id="report-longitude">Longitude: 20</li>
+					</ul>
+				</div>
+				<div id="user-block" class="inner-block">
+					<ul>
+						<li id="user-screenname">User Screename: Joe Dirt</li>
+						<li id="user-email">User email: joe@dirt.com</li>
+					</ul>
+				</div>
+				<div id="pictures-block" class="inner-block">
+					<p>No images.</p>
+				</div>
+
+			</div>
+		</div>
+     </div>
+    		<script>
+		      function initMap() {
+		        // Create a map object and specify the DOM element for display.
+		        var map = new google.maps.Map(document.getElementById('map'), {
+		          center: {lat: 37.393134, lng: -80.053579},
+		          zoom: 8
+		        });
+		        //Get all of the reports here
+		        var numReports;
+		        var xhttp = new XMLHttpRequest();
+		        xhttp.onload = function() {
+				    if (this.status == 200) {
+				    	responseText = this.responseText;
+				    }
+			  	};
+			  	xhttp.open('GET', '/reportscount');
+			  	xhttp.send();
+
+
+			  	// add a marker for each report
+			  	for (i = 0; i < numReports; i++)
+			  	{
+
+
+			  		xhttp = new XMLHttpRequest();
+			  		xhttp.onload = function() {
+			  			if (this.status == 200) {
+			  				responseText = this.responseText;
+
+			  				var marker = new google.maps.Marker({
+							    position: {lat: responseText[i].latitude, lng: responseText[i].Longitude},
+							    map: map
+						  	});
+
+					        marker.setMap(map);
+
+					        marker.addListener('click', function () {
+					        	//change map view
+					        	map.panTo(marker.getPosition());
+					        	map.setZoom(12);
+					        	//update data in the view
+
+
+			        		});
+
+			  			}
+
+			  		}
+
+			  		xhttp.open('GET', '/reports');
+			  		xhttp.send();
+
+			        //loop through all reports and make a marker for each one.
+			        
+
+		    	}
+	      	}
+
+    		</script>
+    		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYS7DlNGn1NrrahLXwJfvx-WTX387a6sE&callback=initMap"
+    		async defer></script>
+
+
+
+
+    		
+		
+	</body>
+
+
+
+
+</html>

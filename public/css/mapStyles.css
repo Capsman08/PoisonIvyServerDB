@@ -1,0 +1,53 @@
+body {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#map {
+	height: 100%;
+	width: 100%;
+	position: static;
+
+}
+
+#info-container {
+	height: 200px;
+	width: 90%;
+	margin-left: 5%;
+	margin-right: 5%;
+	background-color: rgba(255, 255, 255, 0.9);
+	border-radius: 5%;
+	position: absolute; 
+	bottom: 40px; 
+	text-align: center;
+	overflow-x: scroll;
+	padding-bottom: 17px;
+	box-sizing: content-box;
+}
+
+#inner-container {
+	height: 100%;
+}
+
+#report-block {
+
+}
+
+#user-block {
+
+}
+
+#pictures-block {
+
+}
+
+.inner-block {
+	display: block;
+	float: left;
+
+	height: 100%;
+	width: 200px;
+
+}

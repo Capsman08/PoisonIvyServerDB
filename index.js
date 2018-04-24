@@ -4,6 +4,7 @@ var shortid = require('shortid')
 var app = express();
 var sleep = require('sleep');
 var fs = require('fs')
+var path = require('path')
 
 //Open db Connection
 var mysql = require('mysql')
@@ -311,7 +312,6 @@ app.get('/sendphotos', (req, res, next) => {
 
 })
 
-//Gets up to 10 user records at the given offset
 app.get('/sendphotos/:id', (req, res, next) => {
 	var id = req.params.id;
 	console.log("Sending Zip of " + id);
@@ -331,6 +331,36 @@ app.get('/sendphotos/:id', (req, res, next) => {
         filename: filename+'.zip'
     });
   	console.log("sent " + id)
+
+
+});
+
+app.get('/photocount/:id', (req, res, next) => {
+	var id = req.params.id;
+	console.log("Counting photos...");
+	var imageDir = path.join(__dirname, '../images/' + id);
+	if (fs.existsSync(imageDir))
+	{
+	    fs.readdir(path.join(__dirname, '../images/' + id), (err, files) => {
+			res.send(String(files.length));
+		});
+	}
+	else {
+		res.send('0');
+	}
+
+	
+});
+
+app.get('/sendphotodirect/:id/:photoid', (req, res, next) => {
+	var id = req.params.id;
+	var photoId = req.params.photoid;
+	console.log("Sending a photo from " + id);
+
+  	var dir = path.join(__dirname, '../images/' + id);
+  	fs.readdir(dir, (err, files) => {
+  		res.sendFile(path.join(__dirname, '../images/' + id + '/' + files[photoId]));
+  	});
 
 
 });

@@ -76,19 +76,76 @@
 						      	//populate the table
 						      	for (i = 0; i < Math.min(responseText.length, 10); i++)
 						      	{
-					      			var newRowID = "<th scope='row' class='dynamic-report'>" + responseText[i].reportID + "</th>"; 
-					      			var newRowUID = "<td class='dynamic-report'>" + responseText[i].UID + "</td>";
-					      			var newRowPlantType = "<td class='dynamic-report'>" + responseText[i].plant_type + "</td>";
-					      			var newRowLatitude = "<td class='dynamic-report'>" + responseText[i].latitude + "</td>";
-					      			var newRowLongitude = "<td class='dynamic-report'>" + responseText[i].longitude + "</td>";
-					      			var newRowDateTime = "<td class='dynamic-report'>" + responseText[i].date_time + "</td>";
-					      			//add a button to view images
-					      			var newRowImages;
-					      			var xhttp3
+						      		(function (i) {
+						      			var newRowID = "<th scope='row' class='dynamic-report'>" + responseText[i].reportID + "</th>"; 
+						      			var newRowUID = "<td class='dynamic-report'>" + responseText[i].UID + "</td>";
+						      			var newRowPlantType = "<td class='dynamic-report'>" + responseText[i].plant_type + "</td>";
+						      			var newRowLatitude = "<td class='dynamic-report'>" + responseText[i].latitude + "</td>";
+						      			var newRowLongitude = "<td class='dynamic-report'>" + responseText[i].longitude + "</td>";
+						      			var newRowDateTime = "<td class='dynamic-report'>" + responseText[i].date_time + "</td>";
+						      			//add a button to view images
+						      			var newRowImages;
+						      			var xhttp4 = new XMLHttpRequest();
 
-					      			var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + "</tr>";
-					      			$("#reports-table-body").append(newRow);
+						      			xhttp4.onload = function() {
+						      				var trueOrFalse = this.responseText;
+						      				if (trueOrFalse === "true") {
+						      					var xhttp6 = new XMLHttpRequest();
+						      					xhttp6.onload = function() {
 
+						      						var numImages = this.responseText;
+
+
+							      					newRowImages = "<td class='dynamic-report'><button type='submit' class='btn btn-primary' data-toggle='modal' data-target='#picturesmodal" + i + "'>View Image(s)</button></td>";
+							      					var hiddenModalFront = "<div class='modal fade' id='picturesmodal" + i + "' tabindex='-1' role='dialog' aria-labelledby='images-title' aria-hidden='true'>";
+							      					var modalDocumentFront = "<div class='modal-dialog' role='document'>";
+							      					var modalContentFront = "<div class='modal-content'>";
+							      					var modalHeaderFront = "<div class='modal-header'>";
+							      					var modalHeader = "<h5 class='modal-title' id='images-title'>Images</h5>";
+							      					var modalHeaderClose = "<button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>";
+							      					var modalHeaderBack = "</div>";
+							      					var modalBodyFront = "<div class='modal-body' >";
+							      					var modalBodyImages = "";
+							      					for (j = 0; j < numImages; j++) {
+							      						var thisImage = "<img class='modal-ivy-image' src='/sendphotodirect/" + responseText[i].reportID + "/" + j + "'>";
+							      						modalBodyImages = modalBodyImages.concat(thisImage);
+							      						if (j == numImages - 1) {
+
+							      							var backs = "</div></div></div></div>";
+									      					var modal = hiddenModalFront + modalDocumentFront + modalContentFront + modalHeaderFront + modalHeader + modalHeaderClose + modalHeaderBack + modalBodyFront + modalBodyImages + backs;
+
+									      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
+									      					$("#reports-table-body").append(newRow);
+									      					$("body").append(modal);
+							      						}
+
+							      					};
+							      					
+
+
+						      					};
+						      					xhttp6.open('GET', '/photocount/' + responseText[i].reportID);
+						      					xhttp6.send();
+						      					
+
+						      				}
+						      				else if (trueOrFalse === "false") {
+						      					newRowImages = "<td class='dynamic-report'>No Images</td>";
+						      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
+						      					$("#reports-table-body").append(newRow);
+						      				}
+						      				else {
+						      					newRowImages = "<td class='dynamic-report'>Unexpected Result</td>";
+						      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
+						      					$("#reports-table-body").append(newRow);
+						      				}
+
+						      			};
+						      			xhttp4.open('GET', '/hasphotos/' + (i + 1));
+						      			xhttp4.send();
+
+					      			
+					      			})(i);
 						      	}
 
 						      
@@ -103,6 +160,7 @@
 					  		$('.dynamic-report').remove();
 
 					  		var xhttp3 = new XMLHttpRequest();
+					  		var whichBunch = $(this).text();
 					        xhttp3.onload = function() {
 							    if (this.status == 200) {
 							    	var responseText = $.parseJSON(this.responseText);
@@ -111,14 +169,72 @@
 							      	//populate the table
 							      	for (i = 0; i < Math.min(responseText.length, 10); i++)
 							      	{
-						      			var newRowID = "<th scope='row' class='dynamic-report'>" + responseText[i].reportID + "</th>"; 
-						      			var newRowUID = "<td class='dynamic-report'>" + responseText[i].UID + "</td>";
-						      			var newRowPlantType = "<td class='dynamic-report'>" + responseText[i].plant_type + "</td>";
-						      			var newRowLatitude = "<td class='dynamic-report'>" + responseText[i].latitude + "</td>";
-						      			var newRowLongitude = "<td class='dynamic-report'>" + responseText[i].longitude + "</td>";
-						      			var newRowDateTime = "<td class='dynamic-report'>" + responseText[i].date_time + "</td>";
-						      			var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + "</tr>";
-						      			$("#reports-table-body").append(newRow);
+							      		(function (i) {
+							      			var newRowID = "<th scope='row' class='dynamic-report'>" + responseText[i].reportID + "</th>"; 
+							      			var newRowUID = "<td class='dynamic-report'>" + responseText[i].UID + "</td>";
+							      			var newRowPlantType = "<td class='dynamic-report'>" + responseText[i].plant_type + "</td>";
+							      			var newRowLatitude = "<td class='dynamic-report'>" + responseText[i].latitude + "</td>";
+							      			var newRowLongitude = "<td class='dynamic-report'>" + responseText[i].longitude + "</td>";
+							      			var newRowDateTime = "<td class='dynamic-report'>" + responseText[i].date_time + "</td>";
+							      			var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + "</tr>";
+
+							      			//add a button to view images
+							      			var newRowImages;
+							      			var xhttp5 = new XMLHttpRequest();
+
+							      			xhttp5.onload = function() {
+							      				var trueOrFalse = this.responseText;
+							      				if (trueOrFalse === "true") {
+							      					var xhttp7 = new XMLHttpRequest();
+							      					xhttp7.onload = function() {
+
+														var numImages = this.responseText;
+
+							      						newRowImages = "<td class='dynamic-report'><button type='button' class='btn btn-primary' data-toggle='modal' data-target='#picturesmodal" + i + "'>View Image(s)</button></td>";
+								      					var hiddenModalFront = "<div class='modal fade' id='picturesmodal" + i + "' tabindex='-1' role='dialog' aria-labelledby='images-title' aria-hidden='true'>";
+								      					var modalDocumentFront = "<div class='modal-dialog' role='document'>";
+								      					var modalContentFront = "<div class='modal-content'>";
+								      					var modalHeaderFront = "<div class='modal-header'>";
+								      					var modalHeader = "<h5 class='modal-title' id='images-title'>Images</h5>";
+								      					var modalHeaderClose = "<button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>";
+								      					var modalHeaderBack = "</div>";
+								      					var modalBodyFront = "<div class='modal-body' >";
+								      					var modalBodyImages = "";
+								      					for (j = 0; j < numImages; j++) {
+								      						var thisImage = "<img class='modal-ivy-image' src='/sendphotodirect/" + responseText[i].reportID + "/" + j + "'>";
+							      							modalBodyImages = modalBodyImages.concat(thisImage);
+
+							      							if (j === numImages - 1) {
+							      								var backs = "</div></div></div></div>";
+										      					var modal = hiddenModalFront + modalDocumentFront + modalContentFront + modalHeaderFront + modalHeader + modalHeaderClose + modalHeaderBack + modalBodyFront + modalBodyImages + backs;
+
+										      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
+										      					$("#reports-table-body").append(newRow);
+							      							}
+							      						}
+								      					
+							      					}
+							      					xhttp7.open('GET', '/photocount/' + (responseText[i].reportID));
+						      						xhttp7.send();
+							      					
+
+							      				}
+							      				else if (trueOrFalse === "false") {
+							      					newRowImages = "<td class='dynamic-report'>No Images</td>";
+							      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
+							      					$("#reports-table-body").append(newRow);
+							      				}
+							      				else {
+							      					newRowImages = "<td class='dynamic-report'>Unexpected Result</td>";
+							      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
+							      					$("#reports-table-body").append(newRow);
+							      				}
+
+							      			};
+							      			xhttp5.open('GET', '/hasphotos/' + (i + 1 + ((whichBunch -1) * 10)));
+							      			xhttp5.send();
+
+							      		})(i);
 							      	}
 
 							      
@@ -167,6 +283,9 @@
 						    	var responseText = $.parseJSON(this.responseText);
 						    	var numButtons = Math.ceil(responseText[0]['COUNT(*)'] / 10);
 						    	//add the nav buttons
+
+						    	
+						    	
 						    	for (i = 1; i < numButtons + 1; i++)
 						    	{	
 						    		var newButton = "<li class='page-item ' ><a class='page-link user-set'>" + i + "</a></li>";
@@ -258,6 +377,9 @@
 		</div> 
 
 
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	</body>
 
 

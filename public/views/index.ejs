@@ -96,8 +96,8 @@
 						      						var numImages = this.responseText;
 
 
-							      					newRowImages = "<td class='dynamic-report'><button type='submit' class='btn btn-primary' data-toggle='modal' data-target='#picturesmodal" + i + "'>View Image(s)</button></td>";
-							      					var hiddenModalFront = "<div class='modal fade' id='picturesmodal" + i + "' tabindex='-1' role='dialog' aria-labelledby='images-title' aria-hidden='true'>";
+							      					newRowImages = "<td class='dynamic-report'><button type='submit' class='btn btn-primary' data-toggle='modal' data-target='#picturesmodal" + responseText[i].reportID + "'>View Image(s)</button></td>";
+							      					var hiddenModalFront = "<div class='modal fade' id='picturesmodal" + responseText[i].reportID + "' tabindex='-1' role='dialog' aria-labelledby='images-title' aria-hidden='true'>";
 							      					var modalDocumentFront = "<div class='modal-dialog' role='document'>";
 							      					var modalContentFront = "<div class='modal-content'>";
 							      					var modalHeaderFront = "<div class='modal-header'>";
@@ -158,6 +158,7 @@
 					  	//reset the table and add new stuff back in
 					  	$("body").on( 'click', '.report-set', function() {
 					  		$('.dynamic-report').remove();
+					  		$('.modal').remove();
 
 					  		var xhttp3 = new XMLHttpRequest();
 					  		var whichBunch = $(this).text();
@@ -190,8 +191,8 @@
 
 														var numImages = this.responseText;
 
-							      						newRowImages = "<td class='dynamic-report'><button type='button' class='btn btn-primary' data-toggle='modal' data-target='#picturesmodal" + i + "'>View Image(s)</button></td>";
-								      					var hiddenModalFront = "<div class='modal fade' id='picturesmodal" + i + "' tabindex='-1' role='dialog' aria-labelledby='images-title' aria-hidden='true'>";
+							      						newRowImages = "<td class='dynamic-report'><button type='button' class='btn btn-primary' data-toggle='modal' data-target='#picturesmodal" + responseText[i].reportID + "'>View Image(s)</button></td>";
+								      					var hiddenModalFront = "<div class='modal fade' id='picturesmodal" + responseText[i].reportID + "' tabindex='-1' role='dialog' aria-labelledby='images-title' aria-hidden='true'>";
 								      					var modalDocumentFront = "<div class='modal-dialog' role='document'>";
 								      					var modalContentFront = "<div class='modal-content'>";
 								      					var modalHeaderFront = "<div class='modal-header'>";

@@ -210,6 +210,7 @@
 
 										      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
 										      					$("#reports-table-body").append(newRow);
+										      					$("body").append(modal);
 							      							}
 							      						}
 								      					
@@ -284,8 +285,8 @@
 						    	var numButtons = Math.ceil(responseText[0]['COUNT(*)'] / 10);
 						    	//add the nav buttons
 
-						    	
-						    	
+
+
 						    	for (i = 1; i < numButtons + 1; i++)
 						    	{	
 						    		var newButton = "<li class='page-item ' ><a class='page-link user-set'>" + i + "</a></li>";

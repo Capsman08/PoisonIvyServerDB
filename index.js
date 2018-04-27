@@ -282,7 +282,7 @@ app.get('/viewreports', (req, res, next) => {
   		{
   			response += (rows[i].reportID +"," + rows[i].UID+ "," +  rows[i].plant_type +"," + rows[i].latitude + "," + rows[i].longitude + "," + rows[i].date_time + "\n")
   		}
-  		
+  		console.log(response)
   		var date = new Date().toString();
   		date = date.substr(0, date.length - 15 )
   		date = date.replaceAll(" ", "-")
@@ -345,6 +345,9 @@ app.get('/sendphotos', (req, res, next) => {
             { path: '/home/ubuntu/server/images/', name: 'Images' }    //or a folder 
         ],
         filename: filename+'.zip'
+    }, function(err)
+    {
+    	console.log(err);
     });
 
   	console.log("sent")

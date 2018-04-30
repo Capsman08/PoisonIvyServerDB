@@ -1,24 +1,27 @@
 set foreign_key_checks=0;
-create table Reports(
-UID varchar(40),
-UNIQUE(UID),
-plant_type varchar(20),
-latitude float,
-longitude float,
-);
+CREATE TABLE `Image_Locations` (
+  `reportID` int(11) DEFAULT NULL,
+  `img_location` varchar(40) DEFAULT NULL,
+  UNIQUE KEY `img_location` (`img_location`),
+  KEY `reportID` (`reportID`),
+  CONSTRAINT `Image_Locations_ibfk_1` FOREIGN KEY (`reportID`) REFERENCES `Reports` (`reportID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
-create table Image_Locations(
-UID varchar(40),
-FOREIGN KEY(UID) REFERENCES Reports(UID),
-img_location varchar(40),
-UNIQUE(img_location)
-);
+CREATE TABLE `Reports` (
+  `reportID` int(11) NOT NULL AUTO_INCREMENT,
+  `UID` varchar(40) DEFAULT NULL,
+  `plant_type` varchar(20) DEFAULT NULL,
+  `latitude` float DEFAULT NULL,
+  `longitude` float DEFAULT NULL,
+  `date_time` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`reportID`),
+  KEY `UID` (`UID`),
+  CONSTRAINT `Reports_ibfk_1` FOREIGN KEY (`UID`) REFERENCES `Users` (`UID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
-create table Users 
-(
-UID varchar(40),
-UNIQUE(UID),
-FOREIGN KEY(UID) REFERENCES Reports(UID),
-email varchar(40),
-screenname varchar(40)
-);
+CREATE TABLE `Users` (
+  `UID` varchar(40) DEFAULT NULL,
+  `email` varchar(40) DEFAULT NULL,
+  `screenname` varchar(40) DEFAULT NULL,
+  UNIQUE KEY `UID` (`UID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1

@@ -9,15 +9,6 @@ var path = require('path')
 //Open db Connection
 var mysql = require('mysql')
 
-var connection = mysql.createConnection({
-  host     : 'ivyreportstest.ck7nca1ocijz.us-east-2.rds.amazonaws.com',
-  user     : 'Admin',
-  password : 'password',
-  database : 'mydb'
-});
-
-connection.connect()
-
 var IvyConnection = mysql.createConnection({
   host     : 'ivyreportstest.ck7nca1ocijz.us-east-2.rds.amazonaws.com',
   user     : 'Admin',

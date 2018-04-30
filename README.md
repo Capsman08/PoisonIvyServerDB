@@ -1,4 +1,8 @@
-# PoisonIvyServerDB
+# Middleware - Index.js
+Handles the routing for the application website as well as data communication
+To run this file use 
+```java
+node index.js
 
 Files for listening for HTTP requests and communicating with the database.
 

@@ -42,8 +42,8 @@ The file [SQLCreateStatement.txt](SQLCreateStatement.txt) contains the SQL state
 In the views.js in the main directory there is the base routing done for the webpage.
 In the views directory there are the two view ejs files.
 
-### [index.ejs](public/views/index.ejs) \
+### [index.ejs](public/views/index.ejs) 
 This is the main page where the tables to view that data are displayed
 
-### [reportMap/ejs](public/views/reportMap.ejs)
+### [reportMap.ejs](public/views/reportMap.ejs)
 This is a work in progress page to view all the reports on a map 

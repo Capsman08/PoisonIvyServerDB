@@ -43,7 +43,8 @@ In the views.js in the main directory there is the base routing done for the web
 In the views directory there are the two view ejs files.
 
 ### [index.ejs](public/views/index.ejs) 
-This is the main page where the tables to view that data are displayed
+This page renders all of the data that the website has to offer. It pulls styles from public/css/styles.css and Bootstrap (https://getbootstrap.com/), and pulls external Javascript scripts from public/js/scripts.js, Bootstrap and jQuery (http://jquery.com/). Ajax is used to transfer data from the database using our server's middleware and render it in HTML. The site contains tables which render the database's report and user data into two seperate tables, 10 rows at a time. Buttons are provided to provide download functionality for all of the text data in the form of .csv files and images in a .zip file. Images for each report can be viewed directly from the reports table by clicking on a row's "View Image(s)" button, if that report has any corresponding images. 
 
 ### [reportMap.ejs](public/views/reportMap.ejs)
-This is a work in progress page to view all the reports on a map 
+ This page is intended to show all reports on a map in the form of pins, where when a pin is clicked, it will show the correcsponding report data from the database. This page is incomplete. All reports render as pins on the map correctly in its current state, but do not function properly when clicked. The map data and interface is provided by Google Maps (https://developers.google.com/maps/). The API key is registered to Douglas Botello's Virginia Tech .edu email account and is provided in the reportMap.ejs file. The API key corresponds with Google's free tier of map services. Styles are pulled from public/views/mapStyles.css. External Javascript scripts are pulled from public/js/scripts.js and Jquery. Report data is recovered from the database using Ajax calls to our server's middleware.
+

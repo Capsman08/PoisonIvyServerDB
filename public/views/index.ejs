@@ -47,6 +47,8 @@
 				<tbody id="reports-table-body">
 					<script>
 
+						//This ajax call will call the /reportscount middleware and get the number of reports in the database
+						//The result is used to calculate the number of table buttons and renders them accordingly
 						var xhttp = new XMLHttpRequest();
 				        xhttp.onload = function() {
 						    if (this.status == 200) {
@@ -65,10 +67,11 @@
 						      
 						    }
 					  	};
-
 					  	xhttp.open('GET', '/reportscount');
 					  	xhttp.send();
 
+
+					  	//The xhttp2 ajax call will pre-load the first 10 report records in the reports table
 						var xhttp2 = new XMLHttpRequest();
 				        xhttp2.onload = function() {
 						    if (this.status == 200) {
@@ -87,11 +90,17 @@
 						      			var newRowDateTime = "<td class='dynamic-report'>" + responseText[i].date_time + "</td>";
 						      			//add a button to view images
 						      			var newRowImages;
+
+						      			//The xhttp4 ajax call will check the server if the record has any corresponding images
 						      			var xhttp4 = new XMLHttpRequest();
 
 						      			xhttp4.onload = function() {
 						      				var trueOrFalse = this.responseText;
-						      				if (trueOrFalse === "true") {
+						      				// if true, we add a bootstrap modal with all corresponding images that will appear when
+						      				// the "View Image(s)" button is pressed
+						      				if (trueOrFalse === "true") { 
+
+						      					//The xhttp6 ajax call will get all of the images associated with the record
 						      					var xhttp6 = new XMLHttpRequest();
 						      					xhttp6.onload = function() {
 
@@ -131,11 +140,13 @@
 						      					
 
 						      				}
+						      				//If false, the images column will contain a string saying "No Images"
 						      				else if (trueOrFalse === "false") {
 						      					newRowImages = "<td class='dynamic-report'>No Images</td>";
 						      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
 						      					$("#reports-table-body").append(newRow);
 						      				}
+						      				//Error case, this should never happen
 						      				else {
 						      					newRowImages = "<td class='dynamic-report'>Unexpected Result</td>";
 						      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
@@ -162,6 +173,7 @@
 					  		$('.dynamic-report').remove();
 					  		$('.modal').remove();
 
+					  		//The xhttp3 call will load the images based on the button the table button that was pressed.
 					  		var xhttp3 = new XMLHttpRequest();
 					  		var whichBunch = $(this).text();
 					        xhttp3.onload = function() {
@@ -183,11 +195,17 @@
 
 							      			//add a button to view images
 							      			var newRowImages;
+
+							      			//the xhttp5 ajax call will check the server if the record has any corresponding images
 							      			var xhttp5 = new XMLHttpRequest();
 
 							      			xhttp5.onload = function() {
 							      				var trueOrFalse = this.responseText;
+							      				// if true, we add a bootstrap modal with all corresponding images that will appear when
+						      					// the "View Image(s)" button is pressed
 							      				if (trueOrFalse === "true") {
+
+							      					//The xhttp7 ajax call will get all of the images associated with the record
 							      					var xhttp7 = new XMLHttpRequest();
 							      					xhttp7.onload = function() {
 
@@ -207,6 +225,7 @@
 								      						var thisImage = "<img class='modal-ivy-image' src='/sendphotodirect/" + responseText[i].reportID + "/" + j + "'>";
 							      							modalBodyImages = modalBodyImages.concat(thisImage);
 
+							      							//this block only runs once (at the end)
 							      							if (j === numImages - 1) {
 							      								var backs = "</div></div></div></div>";
 										      					var modal = hiddenModalFront + modalDocumentFront + modalContentFront + modalHeaderFront + modalHeader + modalHeaderClose + modalHeaderBack + modalBodyFront + modalBodyImages + backs;
@@ -223,11 +242,13 @@
 							      					
 
 							      				}
+							      				//If false, the images column will contain a string saying "No Images"
 							      				else if (trueOrFalse === "false") {
 							      					newRowImages = "<td class='dynamic-report'>No Images</td>";
 							      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
 							      					$("#reports-table-body").append(newRow);
 							      				}
+							      				//Error case, this should never happen
 							      				else {
 							      					newRowImages = "<td class='dynamic-report'>Unexpected Result</td>";
 							      					var newRow = "<tr class='dynamic-report'>" + newRowID + newRowUID + newRowPlantType + newRowLatitude + newRowLongitude + newRowDateTime + newRowImages + "</tr>";
@@ -286,6 +307,8 @@
 					
 					<script>
 
+						//This ajax call will call the /userscount middleware and get the number of users in the database
+						//The result is used to calculate the number of table buttons and renders them accordingly
 						var xhttp = new XMLHttpRequest();
 				        xhttp.onload = function() {
 						    if (this.status == 200) {
@@ -309,7 +332,7 @@
 					  	xhttp.send();
 
 
-
+					  	//This xhttp2 ajax call will call the /users get request to render the first 10 users in the table
 						var xhttp2 = new XMLHttpRequest();
 				        xhttp2.onload = function() {
 						    if (this.status == 200) {
@@ -338,6 +361,8 @@
 					  	$("body").on( 'click', '.user-set', function() {
 					  		$('.dynamic-user').remove();
 
+					  		//This xhttp3 ajax request will call the users/id get request to render up to 10 users based on
+					  		//the number of the buttons pressed.
 					  		var xhttp3 = new XMLHttpRequest();
 					        xhttp3.onload = function() {
 							    if (this.status == 200) {
@@ -386,9 +411,7 @@
 
 
 		</div> 
-<!-- 			<form action='/sendphotos' method='get'>
-				<button id="download-photos-button"  type="submit" class="btn btn-light">Download All Images</button>
-			</form> -->
+
 
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

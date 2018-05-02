@@ -5,8 +5,6 @@
 		<title>Poison Ivy Reports Map</title>
 
 		<link rel="stylesheet" href="/css/mapStyles.css">
-		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
-		<!-- <link rel="stylesheet" href="/maps/documentation/javascript/demos/demos.css"> -->
  
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script type="text/javascript" src="/js/scripts.js"></script>
@@ -42,14 +40,18 @@
 		</div>
      </div>
     		<script>
-		      function initMap() {
-		        // Create a map object and specify the DOM element for display.
-		        var map = new google.maps.Map(document.getElementById('map'), {
-		          center: {lat: 37.393134, lng: -80.053579},
-		          zoom: 8
+
+    			
+		      	function initMap() {
+			        // Create a map object and specify the DOM element for display.
+			        var map = new google.maps.Map(document.getElementById('map'), {
+			          center: {lat: 37.393134, lng: -80.053579},
+			          zoom: 8
 		        });
 		        //Get all of the reports here
 		        var numReports;
+
+		        //this xhttp ajax class calls the /reportscount get request to count the number of pins to add
 		        var xhttp = new XMLHttpRequest();
 		        xhttp.onload = function() {
 				    if (this.status == 200) {
@@ -59,6 +61,8 @@
 				    	// add a marker for each report
 
 				    	var responseText2;
+
+				    	//this xhttp2 ajax call calls the /reports class which gets all the reports in the database
 				    	var xhttp2 = new XMLHttpRequest();
 				    	xhttp2.onload = function () {
 				    		responseText2 = $.parseJSON(this.responseText);
@@ -78,13 +82,19 @@
 
 						        markers[i].setMap(map);
 
+
+						        //this adds an onClick method to each pin but the following code is NOT FUNCTIONING.
+						        //same function with same data seems to get applied to all pins
 						        markers[i].addListener('click', function () {
 						        	//change map view
 						        	console.log(markers[i].get("id"))
 						        	map.panTo(markers[i].getPosition());
 						        	map.setZoom(15);
 						        	//update data in the view
-;						        	var xhttp3 = new XMLHttpRequest();
+
+						        	//This xhttp3 function calls the /report/id get request to pull all data for a specific report depending
+						        	//on which pin is clicked
+						        	var xhttp3 = new XMLHttpRequest();
 						        	xhttp3.onload = function() {
 						        		var thisReport = $.parseJSON(this.responseText);
 						        		$("#report-id").text("ID: " + thisReport[0].reportID);
@@ -124,7 +134,8 @@
 	      	}
 
     		</script>
-    		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYS7DlNGn1NrrahLXwJfvx-WTX387a6sE&callback=initMap"
+			<!--api key here-->    		
+			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYS7DlNGn1NrrahLXwJfvx-WTX387a6sE&callback=initMap"
     		async defer></script>
 
 

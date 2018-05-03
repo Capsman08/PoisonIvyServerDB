@@ -33,6 +33,10 @@ var IvyConnection = mysql.createConnection({
 
 As long as the database schema is the same the queries should not need to be edited. 
 
+### Directory
+You will need to have a directory called images in the parent folder of the repository.
+
+
 # Database schema
 
 The file [SQLCreateStatement.txt](SQLCreateStatement.txt) contains the SQL statements needed to create the correct schema for the application. Note that any changes to table name or structure could result in the middleware not working correctly.
